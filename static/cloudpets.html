@@ -476,6 +476,7 @@ async function decodeAudio(blob) {
   var req = new Request('decode', {method: 'POST', body: formdata });
   var resp = await fetch(req);
   var url = URL.createObjectURL(await resp.blob());
+  saveFile(url);
   var audio = document.getElementById('audio');
   audio.src = url;
   log('Server decoded audio');
@@ -483,6 +484,26 @@ async function decodeAudio(blob) {
   playbutton.textContent = 'PLAY!';
 }
 
+//own code for downloading a file
+function saveFile(url) {
+  alert("downloading");
+  alert(Date());
+  // Get file name from url.
+  var filename = url.substring(url.lastIndexOf("/") + 1).split("?")[0];
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = 'blob';
+  xhr.onload = function() {
+	var a = document.createElement('a');
+	a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+	a.download = Date(); // Set the file name.
+	a.style.display = 'none';
+	document.body.appendChild(a);
+	a.click();
+	delete a;
+	  };
+	  xhr.open('GET', url);
+	  xhr.send();
+}
 
 function onDisconnected() {
   log('> Bluetooth Device disconnected');
